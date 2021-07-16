@@ -8,13 +8,24 @@ Created on Thu Jul 15 17:35:26 2021
 
 
 from neuron import h, gui
+try: 
+    from neuron.units import ms, mV
+except ModuleNotFoundError:
+    ms = 1
+    mV = 1
 h.load_file('stdrun.hoc')
 
 class Cell:
     def __init__(self, gid, x, y, z, theta):
         self._gid = gid
         self._setup_morphology()
-        self.all = []#self.soma.wholetree()
+        try: 
+            self.all = self.soma.wholetree()
+        except AttributeError:
+            self.all = []
+            for key in self.__dict__:
+                if str(type(self.__dict__[key]))=="<class 'nrn.Section'>":
+                    self.all.append(self.__dict__[key])
         self._setup_biophysics()
         self.x = self.y = self.z = 0
         h.define_shape()

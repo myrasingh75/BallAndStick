@@ -9,6 +9,11 @@ Created on Thu Jul 15 14:45:27 2021
 
 from neuron import h
 import matplotlib.pyplot as plt
+try: 
+    from neuron.units import ms, mV
+except ModuleNotFoundError:
+    ms = 1
+    mV = 1
 
 soma = h.Section(name='soma')
 
@@ -31,9 +36,9 @@ t = h.Vector().record(h._ref_t) # time stamp vector
 
 h.load_file('stdrun.hoc')
 
-h.finitialize(-65)
+h.finitialize(-65 * mV)
 
-h.continuerun(40)
+h.continuerun(40 * ms)
 
 f1 = plt.figure()
 plt.plot(t, v)
